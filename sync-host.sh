@@ -44,15 +44,20 @@ else
     echo "The host repo need to be updated"
     echo "Pulling from the remote repo ..."
     git pull && 
-      echo "Pull from the remote repo successfully" ||
+      echo "Pulled from the remote repo successfully" ||
       { echo "Failed to pull from the remote repo"; exit; }
   fi
   echo "The host repo is already up-to-date."
 fi
 
-echo "Adding new hosts to /etc/hosts"
+echo "Adding new hosts to /etc/hosts ..."
 echo $HEADER | sudo tee -a /etc/hosts > /dev/null
 for filename in ./*; do
+  FILE_NAME_NO_EXT=$(echo "$filename" | cut -d / -f2 | cut -d . -f1)
+  FILE_HEADER="###"$FILE_NAME_NO_EXT
+  echo "$FILE_HEADER" | sudo tee -a /etc/hosts > /dev/null
   cat "$filename" | sudo tee -a /etc/hosts > /dev/null
 done
 echo $FOOTER | sudo tee -a /etc/hosts > /dev/null
+echo "Addded new hosts to /etc/hosts successfully"
+cat /etc/hosts
